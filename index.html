@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellow Inc | Official Family Portal</title>
+    
+    <!-- Стили и Шрифты -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Библиотеки для работы без сборки -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #05010a;
+            color: #f3f4f6;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+        
+        .glass-panel {
+            background: rgba(15, 5, 25, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Загрузочный экран */
+        #initial-loader {
+            position: fixed;
+            inset: 0;
+            background: #05010a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease, visibility 0.6s;
+        }
+        .loader-ring {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(147, 51, 234, 0.1);
+            border-top-color: #9333ea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .car-card-text {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .car-card-text:hover {
+            border-color: rgba(147, 51, 234, 0.5);
+            background: rgba(147, 51, 234, 0.08);
+            transform: translateY(-8px);
+        }
+
+        .rank-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .rank-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 40px -20px rgba(147, 51, 234, 0.3);
+        }
+        
+        #root { min-height: 100vh; }
+    </style>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <!-- Первоначальный лоадер -->
+    <div id="initial-loader">
+        <div class="loader-ring"></div>
+        <div class="mt-6 text-[11px] uppercase tracking-[0.4em] text-purple-500 font-black">Wellow Inc</div>
+    </div>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const Navbar = () => {
+            const [scrolled, setScrolled] = useState(false);
+            useEffect(() => {
+                const handleScroll = () => setScrolled(window.scrollY > 50);
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            const scrollTo = (e, id) => {
+                e.preventDefault();
+                const el = document.querySelector(id);
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            };
+
+            return (
+                <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'py-4 glass-panel shadow-2xl' : 'py-8 bg-transparent'}`}>
+                    <div className="container mx-auto px-6 flex justify-between items-center">
+                        <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
+                            <div className="w-10 h-10 bg-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-900/40">
+                                <span className="font-black text-xl text-white">W</span>
+                            </div>
+                            <div className="flex flex-col text-left">
+                                <span className="text-xl font-black text-white font-montserrat uppercase leading-none tracking-tighter">Wellow <span className="text-purple-500">Inc</span></span>
+                                <span className="text-[9px] uppercase tracking-widest text-purple-400 font-bold opacity-80">Nevada #3</span>
+                            </div>
+                        </div>
+                        <div className="hidden lg:flex items-center gap-10">
+                            {[
+                                { name: 'О семье', id: '#about' },
+                                { name: 'Руководство', id: '#leadership' },
+                                { name: 'Автопарк', id: '#autopark' },
+                                { name: 'Повышение', id: '#promotion' },
+                                { name: 'Дипломатия', id: '#allies' }
+                            ].map((item) => (
+                                <a key={item.name} href={item.id} onClick={(e) => scrollTo(e, item.id)} className="text-[11px] font-bold text-gray-400 hover:text-white uppercase tracking-[0.2em] transition-all">{item.name}</a>
+                            ))}
+                            <a href="https://forum.gta-mobile.ru/threads/916916/" target="_blank" className="px-7 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-[11px] font-black uppercase tracking-widest transition-all shadow-lg shadow-purple-900/20">Форум</a>
+                        </div>
+                    </div>
+                </nav>
+            );
+        };
+
+        const App = () => {
+            useEffect(() => {
+                const loader = document.getElementById('initial-loader');
+                if (loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.visibility = 'hidden';
+                    }, 600);
+                }
+            }, []);
+
+            const cars = [
+                { name: 'BMW M5 F90', price: '10.500.000$' },
+                { name: 'Lamborghini Urus', price: '18.000.000$' },
+                { name: 'Mercedes-Benz G65', price: '10.000.000$' },
+                { name: 'BMW M1000RR', price: '4.500.000$' },
+                { name: 'Lamborghini Huracan', price: '25.700.000$' }
+            ];
+
+            const promotionStages = [
+                {
+                    from: "Стажёр [1]",
+                    to: "Охранник [2]",
+                    reqs: [
+                        "Положить в банк семьи 10.000$ (screen + /stime)",
+                        "Иметь лицензию на оружие и права на машину",
+                        "Положить на склад 60 грамм чая",
+                        "Вступить в конференцию семьи в Discord или Telegram"
+                    ]
+                },
+                {
+                    from: "Охранник [2]",
+                    to: "Агент [3]",
+                    reqs: [
+                        "Положить в банк семьи 30.000$ (screen + /stime)",
+                        "Положить 120 грамм чая на склад (screen + /stime)"
+                    ]
+                },
+                {
+                    from: "Агент [3]",
+                    to: "Секретарь [4]",
+                    reqs: [
+                        "Положить в банк семьи 65.000$ (screen + /stime)",
+                        "Положить на склад семьи 150 грамм чая",
+                        "Доверенность от руководства"
+                    ]
+                },
+                {
+                    from: "Секретарь [4]",
+                    to: "Менеджер [5]",
+                    reqs: [
+                        "Положить в банк семьи 100.000$ (screen + /stime)",
+                        "Положить на склад семьи 170 грамм чая",
+                        "Доверенность от руководства",
+                        "Сменить фамилию на 'Wellow'"
+                    ]
+                }
+            ];
+
+            return (
+                <div className="fade-in">
+                    <Navbar />
+                    
+                    {/* Hero Section */}
+                    <section className="min-h-screen flex items-center justify-center relative pt-20 text-center">
+                        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(88,28,135,0.12),transparent_70%)]"></div>
+                        <div className="container mx-auto px-6 relative z-10">
+                            <div className="inline-block px-5 py-2 rounded-full border border-purple-500/20 bg-purple-500/5 text-purple-400 text-[11px] font-bold uppercase tracking-[0.3em] mb-10">Online Role-Play • Nevada</div>
+                            <h1 className="text-6xl md:text-[110px] font-black font-montserrat mb-10 leading-[0.85] tracking-tighter uppercase">СЕМЬЯ <br/><span className="bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-purple-600">WELLOW INC</span></h1>
+                            <p className="max-w-2xl mx-auto text-gray-400 text-lg mb-14 leading-relaxed font-light">Премиальное сообщество Nevada Server #3. Единство целей, безупречная репутация и абсолютная дисциплина.</p>
+                            <div className="flex justify-center">
+                                <div className="glass-panel px-10 py-5 rounded-[2rem] flex items-center gap-5 border-purple-500/10">
+                                    <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
+                                    <span className="font-bold text-xs uppercase tracking-[0.2em] text-white/90">330+ Активных участников</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* About Section */}
+                    <section id="about" className="py-40 scroll-mt-20 relative overflow-hidden">
+                        <div className="container mx-auto px-6 relative z-10">
+                            <div className="flex flex-col lg:flex-row items-center gap-20">
+                                <div className="lg:w-1/2 text-left">
+                                    <h2 className="text-5xl font-black font-montserrat uppercase mb-10 leading-none">Принципы<br/><span className="text-purple-600">Семьи</span></h2>
+                                    <div className="space-y-8">
+                                        <div className="glass-panel p-10 rounded-[2.5rem] border-l-4 border-l-purple-600">
+                                            <h4 className="text-xl font-black uppercase mb-3 text-white">Взаимовыручка</h4>
+                                            <p className="text-gray-400 text-sm leading-relaxed font-light">Мы никогда не оставляем своих в беде. Любой участник Wellow Inc может рассчитывать на полную поддержку руководства и состава в любых игровых ситуациях.</p>
+                                        </div>
+                                        <div className="glass-panel p-10 rounded-[2.5rem] border-l-4 border-l-purple-900">
+                                            <h4 className="text-xl font-black uppercase mb-3 text-white">Влияние</h4>
+                                            <p className="text-gray-400 text-sm leading-relaxed font-light">Наша семья контролирует ключевые бизнес-процессы и поддерживает порядок на улицах штата Nevada, обеспечивая стабильность нашим союзникам.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="lg:w-1/2">
+                                    <div className="relative p-4 glass-panel rounded-[4rem]">
+                                        <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=800" className="rounded-[3rem] grayscale hover:grayscale-0 transition-all duration-700 opacity-60 hover:opacity-100" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Leadership Section */}
+                    <section id="leadership" className="py-40 bg-[#07020d] scroll-mt-20">
+                        <div className="container mx-auto px-6 text-center">
+                            <h2 className="text-5xl font-black font-montserrat uppercase mb-20 text-white">Верховный Совет</h2>
+                            <div className="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+                                {[
+                                    { n: 'Oliver_Wellow', r: '[VII] President', p: '+1(333)888-835', icon: 'fa-crown' },
+                                    { n: 'Pablo_Desparo', r: '[VI] Vice-President', p: '286-666', icon: 'fa-user-shield' }
+                                ].map((l, i) => (
+                                    <div key={i} className="glass-panel p-16 rounded-[4rem] text-center border-white/5 relative group overflow-hidden">
+                                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-purple-600 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                                        <div className="w-24 h-24 bg-purple-600/10 rounded-3xl flex items-center justify-center mx-auto mb-10 border border-purple-500/20">
+                                            <i className={`fas ${l.icon} text-3xl text-purple-500`}></i>
+                                        </div>
+                                        <h4 className="text-3xl font-black text-white font-montserrat mb-3">{l.n}</h4>
+                                        <p className="text-purple-500 text-[11px] font-black uppercase tracking-[0.4em] mb-12">{l.r}</p>
+                                        <div className="pt-10 border-t border-white/5">
+                                            <span className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-2 block">Связь в штате</span>
+                                            <div className="text-2xl font-mono text-white tracking-widest">{l.p}</div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Autopark Section */}
+                    <section id="autopark" className="py-40 scroll-mt-20">
+                        <div className="container mx-auto px-6 text-center">
+                            <h2 className="text-5xl font-black font-montserrat uppercase mb-6 text-white tracking-tight">Наш Автопарк</h2>
+                            <p className="text-purple-500 uppercase text-[11px] tracking-[0.5em] font-black mb-20">Premium Asset Collection</p>
+                            
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                                {cars.map((car, i) => (
+                                    <div key={i} className="car-card-text glass-panel p-12 rounded-[3rem] border border-white/5 flex flex-col items-center justify-center text-center">
+                                        <div className="w-20 h-20 bg-purple-600/5 rounded-3xl flex items-center justify-center mb-8 border border-purple-500/10">
+                                            <i className={`fas ${car.name.includes('RR') ? 'fa-motorcycle' : 'fa-car-side'} text-3xl text-purple-500`}></i>
+                                        </div>
+                                        <h5 className="text-2xl font-black text-white uppercase tracking-tighter mb-4 font-montserrat leading-none">{car.name}</h5>
+                                        <div className="h-[2px] w-10 bg-gradient-to-r from-transparent via-purple-600 to-transparent mb-6 opacity-50"></div>
+                                        <div className="text-purple-400 font-mono font-black text-2xl tracking-tighter">
+                                            {car.price}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            
+                            <div className="mt-20 glass-panel inline-block px-12 py-6 rounded-full border-purple-500/20">
+                                <span className="text-gray-400 text-[11px] uppercase tracking-[0.3em] font-black">
+                                    Общая стоимость гаража превышает <span className="text-white">65.000.000$</span>
+                                </span>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Promotion System Section */}
+                    <section id="promotion" className="py-40 bg-[#07020d] scroll-mt-20">
+                        <div className="container mx-auto px-6 text-center">
+                            <h2 className="text-5xl font-black font-montserrat uppercase mb-6 text-white tracking-tight">Система Повышения</h2>
+                            <p className="text-purple-500 uppercase text-[11px] tracking-[0.5em] font-black mb-20">Career Progression Pathway</p>
+                            
+                            <div className="grid md:grid-cols-2 gap-10 max-w-6xl mx-auto text-left">
+                                {promotionStages.map((stage, i) => (
+                                    <div key={i} className="rank-card glass-panel p-12 rounded-[3.5rem] border border-white/5 flex flex-col">
+                                        <div className="flex justify-between items-start mb-8">
+                                            <div>
+                                                <span className="text-[10px] text-purple-500 font-black uppercase tracking-widest block mb-1">Ступень {i + 1}</span>
+                                                <h4 className="text-2xl font-black text-white uppercase tracking-tighter">{stage.from} → {stage.to}</h4>
+                                            </div>
+                                            <div className="w-12 h-12 bg-purple-600/10 rounded-2xl flex items-center justify-center border border-purple-500/20">
+                                                <i className="fas fa-arrow-trend-up text-purple-500"></i>
+                                            </div>
+                                        </div>
+                                        
+                                        <ul className="space-y-4 flex-grow">
+                                            {stage.reqs.map((req, idx) => (
+                                                <li key={idx} className="flex gap-4 items-start group">
+                                                    <div className="mt-1 w-5 h-5 rounded-full bg-purple-900/30 flex-shrink-0 flex items-center justify-center border border-purple-500/20">
+                                                        <i className="fas fa-check text-[8px] text-purple-400"></i>
+                                                    </div>
+                                                    <span className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-200 transition-colors">{req}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        
+                                        <div className="mt-10 pt-8 border-t border-white/5 flex items-center gap-4">
+                                            <i className="fas fa-camera text-gray-600 text-xs"></i>
+                                            <span className="text-[10px] text-gray-500 uppercase font-bold">Обязательно наличие /stime на всех доказательствах</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Allies Section */}
+                    <section id="allies" className="py-40 scroll-mt-20">
+                        <div className="container mx-auto px-6 text-center">
+                            <h2 className="text-5xl font-black font-montserrat uppercase mb-20 text-white">Дипломатия</h2>
+                            <div className="max-w-4xl mx-auto glass-panel rounded-[3.5rem] overflow-hidden border-white/5 shadow-2xl">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left">
+                                        <thead>
+                                            <tr className="bg-white/5 text-[11px] uppercase font-black text-purple-500 tracking-[0.3em]">
+                                                <th className="px-12 py-8">Наименование</th>
+                                                <th className="px-12 py-8 text-right">Политика</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-white/5 text-sm">
+                                            {['Berzloy Inc', 'Dark Sky', 'MPRI', 'Pipich Alliance', 'Septes'].map((n) => (
+                                                <tr key={n} className="hover:bg-white/[0.02] transition-colors">
+                                                    <td className="px-12 py-7 font-black text-white text-base tracking-tight">{n}</td>
+                                                    <td className="px-12 py-7 text-right">
+                                                        <span className="bg-purple-600/10 text-purple-400 px-5 py-2 rounded-full font-black uppercase text-[10px] tracking-widest border border-purple-500/10">Союз</span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* CTA Section */}
+                    <section className="py-40 bg-black border-t border-white/5 text-center">
+                        <div className="container mx-auto px-6">
+                            <div className="max-w-5xl mx-auto glass-panel p-20 rounded-[5rem] border-purple-500/20 relative overflow-hidden">
+                                <div className="absolute -top-20 -right-20 w-64 h-64 bg-purple-600/10 rounded-full blur-[100px]"></div>
+                                <h3 className="text-5xl md:text-6xl font-black font-montserrat uppercase mb-10 text-white leading-tight">Твоё место в <br/><span className="text-purple-600">Элите</span></h3>
+                                <p className="text-gray-400 mb-16 text-lg font-light max-w-xl mx-auto italic">Открой новую главу своей истории на Nevada Server #3 вместе с Wellow Inc.</p>
+                                <a href="https://forum.gta-mobile.ru/threads/916916/" target="_blank" className="inline-block px-16 py-6 bg-purple-600 hover:bg-purple-500 text-white rounded-2xl font-black uppercase tracking-[0.2em] transition-all shadow-2xl shadow-purple-900/40 transform hover:scale-105 active:scale-95">Стать частью семьи</a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <footer className="py-16 text-center border-t border-white/5">
+                        <div className="text-[11px] text-gray-600 uppercase tracking-[0.5em] font-black">
+                            © 2025 Wellow Inc • Nevada Server #3 • Digital HQ
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        // Запасной вариант удаления лоадера, если React не запустится
+        setTimeout(() => {
+            const loader = document.getElementById('initial-loader');
+            if (loader && loader.style.opacity !== '0') {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.visibility = 'hidden', 600);
+            }
+        }, 3000);
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
